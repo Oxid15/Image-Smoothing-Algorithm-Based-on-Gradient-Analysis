@@ -39,6 +39,7 @@ void computeAngles(Tu*** src, Tf*** dst, uint32_t height, uint32_t width, uint32
 				Ts* gradient = new Ts[2];
 				grad<Tu, Ts>(j, i, c, src, gradient);
 				dst[i][j][c] = angle<Tf, Ts>(gradient);
+				delete gradient;
 			}
 }
 
@@ -61,6 +62,7 @@ void computeModules(Tu*** src, Tf*** dst, uint32_t height, uint32_t width, uint3
 				Ts* gradient = new Ts[2];
 				grad<Tu, Ts>(j, i, c, src, gradient);
 				dst[i][j][c] = module<Tf, Ts>(gradient);
+				delete gradient;
 			}
 }
 
