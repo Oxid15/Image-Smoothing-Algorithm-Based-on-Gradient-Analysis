@@ -1,6 +1,14 @@
 //Vladimir Gudkov, Ilia Moiseev
 //South Ural State University, Chelyabinsk, Russia, 2020
 //Image smoothing Algorithm Based on Gradient Analysis
+/*
+Functions and classes in this file use the template system.
+The names of template arguments are the tips that were made to help user
+in choosing the data types that are recommended to use (in parenthesis):
+	Tf - floating point number   (float or double)
+	Ts - signed integer          (int32_t)
+	Tu - unsigned integer        (uint8_t)
+*/
 
 #include "stdint.h"
 #include <cmath>
@@ -75,10 +83,23 @@ void computeModules(Tu*** src, Tf*** dst, Ts**** grads, uint32_t height, uint32_
 				dst[i][j][c] = module<Tf, Ts>(grads[i][j][c]);
 }
 
+//The class that implements filtering. To use it create an instance of Filter class 
+//and then call operator ()
 template<typename Tf, typename Tu>
 class Filter
 {
 public:
+	/*
+		Operator () filters src with kernel of size ksize, then leaves result in dst image.
+
+		Recieves:
+		Tu*** src - source image, array with the shape (height x width x colors)
+		Tf*** dst - destination image with the same shape as src
+		Tf*** modules - the array of gradient modules with the same shape as src
+		Tf*** modules - the array of gradient modules with the same shape as src
+		uint32_t ksize - size of filtering kernel (odd values expected)
+		uint32_t height, width, colors - dimensions of the src image
+	*/
 	void operator()(Tu*** src, Tf*** dst, Tf*** modules, Tf*** angles,
 		uint32_t ksize, uint32_t height, uint32_t width, uint32_t colors)
 	{
@@ -86,7 +107,6 @@ public:
 			for (uint32_t i = 0; i < height; i++)
 				for (uint32_t j = 0; j < width; j++)
 				{		
-
 					int up = i - ksize / 2;
 					int left = j - ksize / 2;
 					int down = i + ksize / 2 + 1;
