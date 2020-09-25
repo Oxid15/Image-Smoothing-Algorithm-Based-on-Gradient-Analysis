@@ -93,7 +93,7 @@ def filter_channel(src, dst, modules, angles, ksize):
                 #pixel remains without changes if sum of weights = 0
                 dst[i][j] = src[i][j]
 
-def filter_(src, ksize):
+def filter_(src, ksize, grads=None, modules=None, angles=None):
     if(len(src.shape) == 3):
         red, green, blue = src[:,:,0], src[:,:,1], src[:,:,2]
         red   = filter_(red,   ksize)
@@ -104,9 +104,12 @@ def filter_(src, ksize):
         return result
 
     newimage = np.zeros(src.shape)
-    grads = compute_grads(src)
-    modules =  compute_modules(src, grads=grads)
-    angles = compute_angles(src, grads=grads)
+    if(grads is None):
+        grads = compute_grads(src)
+    if(modules is None):
+        modules =  compute_modules(src, grads=grads)
+    if(angles is None):
+        angles = compute_angles(src, grads=grads)
 
     filter_channel(src, newimage, modules, angles, ksize)
     return newimage
