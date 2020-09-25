@@ -81,7 +81,7 @@ def filter_channel(src, dst, modules, angles, ksize):
                     weight = .0
                     if (k != i and l != j):
                         angle = 2.* (angles[k][l] - angles[i][j])
-                        weight = (cos(angle) + 1) / modules[i][j]
+                        weight = (cos(angle) + 1) / modules[k][l]
                     else:
                         #weight of central pixel
                         weight = 1.
