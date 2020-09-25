@@ -79,9 +79,10 @@ def filter_channel(src, dst, modules, angles, ksize):
                     if (modules[k][l] == .0):
                         continue
                     weight = .0
-                    if (k != i and l != j):
-                        angle = 2.* (angles[k][l] - angles[i][j])
-                        weight = (cos(angle) + 1) / modules[k][l]
+                    if (k != i or l != j):
+                        alpha = 1. / modules[k][l]
+                        beta = 2.* (angles[i][j] - angles[k][l])
+                        weight = (cos(beta) + 1) * alpha
                     else:
                         #weight of central pixel
                         weight = 1.
@@ -95,7 +96,7 @@ def filter_channel(src, dst, modules, angles, ksize):
 
 def filter_(src, ksize, grads=None, modules=None, angles=None):
     if(len(src.shape) == 3):
-        red, green, blue = src[:,:,0], src[:,:,1], src[:,:,2]
+        red, green, blue = src[:,:,0].astype(np.float32), src[:,:,1].astype(np.float32), src[:,:,2].astype(np.float32)
         red   = filter_(red,   ksize)
         green = filter_(green, ksize)
         blue  = filter_(blue,  ksize)
