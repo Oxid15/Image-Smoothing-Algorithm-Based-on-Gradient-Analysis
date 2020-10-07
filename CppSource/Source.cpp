@@ -1,8 +1,9 @@
 //Vladimir Gudkov, Ilia Moiseev
 //South Ural State University, Chelyabinsk, Russia, 2020
 //Image smoothing Algorithm Based on Gradient Analysis
+
 /*
-Functions and classes in this file use the template system.
+Functions and classes in this file use C++ templates.
 The names of template arguments are the tips that were made to help user
 in choosing the data types that are recommended to use (in parenthesis):
 	Tf - floating point number   (float or double)
@@ -33,6 +34,15 @@ void grad(int x, int y, int c, Tu*** image, Ts* grad)
 template<typename Tu, typename Ts>
 void computeGrads(Tu*** src, Ts**** dst, uint32_t height, uint32_t width, uint32_t colors)
 {
+	/*
+		The function to compute the gradient vectors.
+		Takes the image from src and leaves gradient vectors as [x, y] in dst.
+		
+		Recieves:
+		Tu*** src - source image, array with the shape (height x width x colors)
+		Tf*** dst - destination array, where angles will be stored; has the same shape as src
+		uint32_t height, width, colors - dimensions of the src image
+	*/
 	for (uint32_t c = 0; c < colors; c++)
 		for (uint32_t i = 1; i < height - 1; i++)
 			for (uint32_t j = 1; j < width - 1; j++)
@@ -42,6 +52,18 @@ void computeGrads(Tu*** src, Ts**** dst, uint32_t height, uint32_t width, uint32
 template<typename Tf, typename Tu, typename Ts>
 void computeAngles(Tu*** src, Tf*** dst, uint32_t height, uint32_t width, uint32_t colors)
 {
+	/*
+		The function to compute the angles of the gradients [1/2].
+		Takes the image from src and leaves angles in dst. Computes gradients. If the gradients
+		are already precomputed, use computeAngles [2/2]
+
+		The angles are given by standard atan2 function, evaluated from gradient vector.
+		
+		Recieves:
+		Tu*** src - source image, array with the shape (height x width x colors)
+		Tf*** dst - destination array, where angles will be stored; has the same shape as src
+		uint32_t height, width, colors - dimensions of the src image
+	*/
 	for (uint32_t c = 0; c < colors; c++)
 		for (uint32_t i = 1; i < height - 1; i++)
 			for (uint32_t j = 1; j < width - 1; j++)
@@ -56,6 +78,20 @@ void computeAngles(Tu*** src, Tf*** dst, uint32_t height, uint32_t width, uint32
 template<typename Tf, typename Tu, typename Ts>
 void computeAngles(Tu*** src, Tf*** dst, Ts**** grads, uint32_t height, uint32_t width, uint32_t colors)
 {
+	/*
+		The function to compute the angles of the gradients [2/2]. 
+		Takes the image from src and gradients from grads, leaves angles in dst. 
+		Uses precomputed gradients. If the gradients
+		aren't precomputed, use computeAngles [1/2]
+
+		The angles are given by standard atan2 function, evaluated from gradient vector.
+		
+		Recieves:
+		Tu*** src - source image, array with the shape (height x width x colors)
+		Tf*** dst - destination array, where angles will be stored; has the same shape as src
+		Ts**** grads - array of precomputed gradients
+		uint32_t height, width, colors - dimensions of the src image
+	*/
 	for (uint32_t c = 0; c < colors; c++)
 		for (uint32_t i = 1; i < height - 1; i++)
 			for (uint32_t j = 1; j < width - 1; j++)
@@ -65,6 +101,18 @@ void computeAngles(Tu*** src, Tf*** dst, Ts**** grads, uint32_t height, uint32_t
 template<typename Tf, typename Tu, typename Ts>
 void computeModules(Tu*** src, Tf*** dst, uint32_t height, uint32_t width, uint32_t colors)
 {
+	/*
+		The function to compute the modules [1/2]. 
+		Takes the image from src and leaves modules in dst. Computes gradients. If the gradients
+		are already precomputed, use computeModules [2/2]
+
+		The modules are euclidean norm of gradients.
+		
+		Recieves:
+		Tu*** src - source image, array with the shape (height x width x colors)
+		Tf*** dst - destination array, where modules will be stored; has the same shape as src
+		uint32_t height, width, colors - dimensions of the src image
+	*/
 	for (uint32_t c = 0; c < colors; c++)
 		for (uint32_t i = 1; i < height - 1; i++)
 			for (uint32_t j = 1; j < width - 1; j++)
@@ -79,6 +127,20 @@ void computeModules(Tu*** src, Tf*** dst, uint32_t height, uint32_t width, uint3
 template<typename Tf, typename Tu, typename Ts>
 void computeModules(Tu*** src, Tf*** dst, Ts**** grads, uint32_t height, uint32_t width, uint32_t colors)
 {
+	/*
+		The function to compute the modules [2/2]. 
+		Takes the image from src and gradients from grads, leaves modules in dst. 
+		Uses precomputed gradients. If the gradients
+		aren't precomputed, use computeModules [1/2]
+
+		The modules are euclidean norm of gradients.
+		
+		Recieves:
+		Tu*** src - source image, array with the shape (height x width x colors)
+		Tf*** dst - destination array, where modules will be stored; has the same shape as src
+		Ts**** grads - array of precomputed gradients
+		uint32_t height, width, colors - dimensions of the src image
+	*/
 	for (uint32_t c = 0; c < colors; c++)
 		for (uint32_t i = 1; i < height - 1; i++)
 			for (uint32_t j = 1; j < width - 1; j++)
@@ -86,7 +148,7 @@ void computeModules(Tu*** src, Tf*** dst, Ts**** grads, uint32_t height, uint32_
 }
 
 //The class that implements filtering. To use it create an instance of Filter class 
-//and then call operator ()
+//and then call operator () from it
 template<typename Tf, typename Tu>
 class Filter
 {
@@ -116,7 +178,7 @@ public:
 					double sumWeights = .0;
 					double result = .0;
 					for (int k = up; k < down; k++)
-					{
+					{ 
 						if (k < 0 || k >= height) continue;
 						for (int l = left; l < right; l++)
 						{
@@ -146,6 +208,8 @@ public:
 				}
 	}
 
+	Mat operator()(Mat src, uint32_t ksize)
+	{
 	/*
 		Easy to use interface for filtering using opencv Mat data type.
 		Recieves:
@@ -161,35 +225,33 @@ public:
 
 			imwrite(<output path>, output);
 	*/
-	Mat operator()(Mat src, uint32_t ksize)
-	{
 		//allocating memory
 		uint32_t height = src.rows;
 		uint32_t width = src.cols;
 		uint32_t colors = src.channels();
 
-		uint8_t*** image = new uint8_t**[height];
-		float*** output = new float**[height];
-		uint8_t*** intoutput = new uint8_t**[height];
-		float*** modules = new float**[height];
-		float*** angles = new float**[height];
+		Tu*** image = new Tu**[height];
+		Tf*** output = new Tf**[height];
+		Tu*** intoutput = new Tu**[height];
+		Tf*** modules = new Tf**[height];
+		Tf*** angles = new Tf**[height];
 		int32_t**** grads = new int32_t***[height];
 		for (uint32_t i = 0; i < height; i++)
 		{
-			image[i] = new uint8_t*[width];
-			output[i] = new float*[width];
-			intoutput[i] = new uint8_t*[width];
-			modules[i] = new float*[width];
-			angles[i] = new float*[width];
+			image[i] = new Tu*[width];
+			output[i] = new Tf*[width];
+			intoutput[i] = new Tu*[width];
+			modules[i] = new Tf*[width];
+			angles[i] = new Tf*[width];
 			grads[i] = new int32_t**[width];
 			for (uint32_t j = 0; j < width; j++)
 			{
-				image[i][j] = src.ptr<uint8_t>(i, j);
+				image[i][j] = src.ptr<Tu>(i, j);
 
-				output[i][j] = new float[colors];
-				intoutput[i][j] = new uint8_t[colors];
-				modules[i][j] = new float[colors];
-				angles[i][j] = new float[colors];
+				output[i][j] = new Tf[colors];
+				intoutput[i][j] = new Tu[colors];
+				modules[i][j] = new Tf[colors];
+				angles[i][j] = new Tf[colors];
 				grads[i][j] = new int32_t*[colors];
 				for (uint32_t c = 0; c < colors; c++)
 				{
@@ -204,14 +266,14 @@ public:
 			}
 		}
 
-		computeGrads<uint8_t, int32_t>(image, grads, height, width, colors);
-		computeModules<float, uint8_t, int32_t>(image, modules, grads, height, width, colors);
-		computeAngles<float, uint8_t, int32_t>(image, angles, grads, height, width, colors);
+		computeGrads<Tu, int32_t>(image, grads, height, width, colors);
+		computeModules<Tf, Tu, int32_t>(image, modules, grads, height, width, colors);
+		computeAngles<Tf, Tu, int32_t>(image, angles, grads, height, width, colors);
 
 		//filtering with regular function
 		this->operator()(image, output, modules, angles, ksize, height, width, colors);
-		//
 
+		//deallocating memory that gradients, modules and angles were using
 		for (uint32_t i = 0; i < height; i++)
 		{
 			for (uint32_t j = 0; j < width; j++)
@@ -231,12 +293,13 @@ public:
 		delete grads;
 
 		//converting to integer, flattening and returning new Mat image
+		//while deallocating all used memory
 		for (int i = 0; i < height; i++)
 		{
 			for (int j = 0; j < width; j++)
 			{
 				for (int c = 0; c < colors; c++)
-					intoutput[i][j][c] = (uint8_t)MIN(output[i][j][c], 255);
+					intoutput[i][j][c] = (Tu)MIN( round(output[i][j][c]), 255);
 				delete output[i][j];
 			}
 			delete output[i];
@@ -250,7 +313,7 @@ public:
 			{
 				for (int c = 0; c < colors; c++)
 				{
-					matOutput.ptr<uint8_t>(i, j)[c] = intoutput[i][j][c];
+					matOutput.ptr<Tu>(i, j)[c] = intoutput[i][j][c];
 				}
 				delete intoutput[i][j];
 			}
