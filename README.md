@@ -22,3 +22,27 @@ d) - our filter
 ## Edge detection
 Here is the output of Canny edge detector that was applied on the image with and without preprocessing with our filter.
 ![edges](/images/edge_detection.png)
+
+## Code usage
+Libraries used:
+  - opencv 4.3.0 for the usage of Mat type
+
+Here is the simple example of filter usage with opencv Mat images:
+
+```cpp
+//opencv included in Source.cpp if you need to change include path, 
+//you should change it there
+#include "Source.cpp"
+
+int main()
+{
+    cv::Mat matImage = cv::imread("your_input_file_name", cv::IMREAD_COLOR);  //read images using opencv from file into Mat type
+    
+    int kernelSize = 3;                                                       //set kernelSize = 3 for filtering with 3x3 kernel
+		Filter<float, uint8_t> filter;                                            //create the instance of filter
+		cv::Mat matOutput = filter(matImage, kernelSize);                         //filter image
+    
+		cv::imwrite("your_output_file_name", matOutput);                          //write the result
+    return 0;
+}
+```
