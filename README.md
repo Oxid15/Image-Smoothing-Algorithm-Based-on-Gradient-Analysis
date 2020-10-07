@@ -39,10 +39,10 @@ int main()
     cv::Mat matImage = cv::imread("your_input_file_name", cv::IMREAD_COLOR);  //read images using opencv from file into Mat type
     
     int kernelSize = 3;                                                       //set kernelSize = 3 for filtering with 3x3 kernel
-		Filter<float, uint8_t> filter;                                            //create the instance of filter
-		cv::Mat matOutput = filter(matImage, kernelSize);                         //filter image
+    Filter<float, uint8_t> filter;                                            //create the instance of filter
+    cv::Mat matOutput = filter(matImage, kernelSize);                         //filter image
     
-		cv::imwrite("your_output_file_name", matOutput);                          //write the result
+    cv::imwrite("your_output_file_name", matOutput);                          //write the result
     return 0;
 }
 ```
