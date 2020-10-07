@@ -13,6 +13,7 @@ in choosing the data types that are recommended to use (in parenthesis):
 
 #include "stdint.h"
 #include <cmath>
+#include"\opencv\build\include\opencv2\opencv.hpp"
 
 using namespace cv;
 
