@@ -36,13 +36,13 @@ Here is the simple example of filter usage with opencv Mat images:
 
 int main()
 {
-    cv::Mat matImage = cv::imread("your_input_file_name", cv::IMREAD_COLOR);  //read image using opencv from file into Mat type
+    cv::Mat img = cv::imread("your_input_file_name", cv::IMREAD_COLOR);       //read image using opencv from file into Mat type
     
     int kernelSize = 3;                                                       //set kernelSize = 3 for filtering with 3x3 kernel
     Filter<float, uint8_t> filter;                                            //create the instance of filter
-    cv::Mat matOutput = filter(matImage, kernelSize);                         //filter image
+    cv::Mat output = filter(img, kernelSize);                                 //filter image
     
-    cv::imwrite("your_output_file_name", matOutput);                          //write the result
+    cv::imwrite("your_output_file_name", output);                             //write the result
     return 0;
 }
 ```
@@ -53,6 +53,6 @@ import cv2
 
 img = cv2.imread('your_input_file_name', cv2.IMREAD_COLOR) #read images using opencv from file
 kernel_size = 3                                            #set kernelSize = 3 for filtering with 3x3 kernel
-filter_(img, kernel_size)                                  #filter image
-cv2.imwrite('your_output_file_name', img)                  #write the result
+output = filter_(img, kernel_size)                                  #filter image
+cv2.imwrite('your_output_file_name', output)                  #write the result
 ```
