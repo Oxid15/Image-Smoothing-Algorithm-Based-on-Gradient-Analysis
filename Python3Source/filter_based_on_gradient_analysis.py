@@ -4,7 +4,6 @@
 
 import numpy as np
 from math import sqrt, atan2, cos, isnan
-from random import random, randint
 
 
 def euclid_norm(vect): 
