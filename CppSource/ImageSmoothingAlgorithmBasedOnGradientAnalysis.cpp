@@ -208,6 +208,7 @@ public:
 		Tf*** modules - the array of gradient modules with the same shape as src
 		Tf*** modules - the array of gradient modules with the same shape as src
 		uint32_t ksize - size of filtering kernel (odd values expected)
+		uint32_t n - number of sequential runs
 		uint32_t height, width, colors - dimensions of the src image
 	*/
 	void operator()(Tu*** src, Tf*** dst, Tf*** modules, Tf*** angles,
@@ -268,6 +269,7 @@ public:
 			Recieves:
 				Mat src - image to be filtered
 				uint32_t ksize - kernel size
+				uint32_t n - number of sequential runs
 			Returns:
 				Mat - filtered image
 			Usage example:
