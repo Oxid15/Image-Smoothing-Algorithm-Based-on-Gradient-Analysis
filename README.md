@@ -48,7 +48,7 @@ int main()
 ```
 Here is example with python:
 ```python
-from filter_based_on_gradient_analysis import fga
+import filter_based_on_gradient_analysis as fga
 import cv2
 
 img = cv2.imread('your_input_file_name', cv2.IMREAD_COLOR)  # read images using opencv from file
