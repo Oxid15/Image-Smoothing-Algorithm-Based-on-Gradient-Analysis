@@ -28,9 +28,7 @@ def compute_grads_channel(image, grads):
 
 
 def compute_grads(image, grads):
-    compute_grads_channel(image[:, :, 0], grads[:, :, :, 0])
-    compute_grads_channel(image[:, :, 1], grads[:, :, :, 1])
-    compute_grads_channel(image[:, :, 2], grads[:, :, :, 2])
+    list(map(lambda i: compute_grads_channel(image[:, :, i], grads[:, :, :, i]), [i for i in range(3)]))
 
 
 def compute_modules_channel(image, modules, grads):
@@ -41,9 +39,8 @@ def compute_modules_channel(image, modules, grads):
 
 
 def compute_modules(image, modules, grads):
-    compute_modules_channel(image[:, :, 0], modules[:, :, 0], grads[:, :, :, 0])
-    compute_modules_channel(image[:, :, 1], modules[:, :, 1], grads[:, :, :, 1])
-    compute_modules_channel(image[:, :, 2], modules[:, :, 2], grads[:, :, :, 2])
+    list(map(lambda i: compute_modules_channel(image[:, :, i], modules[:, :, i], grads[:, :, :, i]),
+             [i for i in range(3)]))
 
 
 def compute_angles_channel(image, angles, grads):
@@ -58,9 +55,8 @@ def compute_angles_channel(image, angles, grads):
 
 
 def compute_angles(image, angles, grads):
-    compute_angles_channel(image[:, :, 0], angles[:, :, 0], grads[:, :, :, 0])
-    compute_angles_channel(image[:, :, 1], angles[:, :, 1], grads[:, :, :, 1])
-    compute_angles_channel(image[:, :, 2], angles[:, :, 2], grads[:, :, :, 2])
+    list(map(lambda i: compute_angles_channel(image[:, :, i], angles[:, :, i], grads[:, :, :, i]),
+             [i for i in range(3)]))
 
 
 def smooth_channel(src, k_size, n=1, grads=None, modules=None, angles=None, dst=None):
@@ -149,26 +145,12 @@ def _smooth(src, dst, k_size, grads=None, modules=None, angles=None):
         angles = np.zeros((src.shape[0], src.shape[1], 3))
         compute_angles(src.astype(np.float64), angles, grads)
 
-    red, green, blue = \
-        src[:, :, 0].astype(np.float64), \
-        src[:, :, 1].astype(np.float64), \
-        src[:, :, 2].astype(np.float64)
-
-    smooth_channel(red, k_size,
-                   grads=grads[:, :, :, 0],
-                   modules=modules[:, :, 0],
-                   angles=angles[:, :, 0],
-                   dst=dst[:, :, 0])
-    smooth_channel(green, k_size,
-                   grads=grads[:, :, :, 1],
-                   modules=modules[:, :, 1],
-                   angles=angles[:, :, 1],
-                   dst=dst[:, :, 1])
-    smooth_channel(blue, k_size,
-                   grads=grads[:, :, :, 2],
-                   modules=modules[:, :, 2],
-                   angles=angles[:, :, 2],
-                   dst=dst[:, :, 2])
+        list(map(lambda i: smooth_channel(src[:, :, i].astype(np.float64),
+                       k_size,
+                       grads=grads[:, :, :, i],
+                       modules=modules[:, :, i],
+                       angles=angles[:, :, i],
+                       dst=dst[:, :, i]), [i for i in range(3)]))
     return dst
 
 
