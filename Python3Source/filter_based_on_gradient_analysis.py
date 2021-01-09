@@ -96,12 +96,12 @@ def _smooth_channel(src, k_size, grads=None, modules=None, angles=None, dst=None
     if grads is None:
         grads = np.zeros((src.shape[0], src.shape[1], 2))
         compute_grads_channel(src.astype(np.float64), grads)
-        if modules is None:
-            modules = np.zeros((src.shape[0], src.shape[1]))
-            compute_modules_channel(src.astype(np.float64), modules, grads)
-        if angles is None:
-            angles = np.zeros((src.shape[0], src.shape[1]))
-            compute_angles_channel(src.astype(np.float64), angles, grads)
+    if modules is None:
+        modules = np.zeros((src.shape[0], src.shape[1]))
+        compute_modules_channel(src.astype(np.float64), modules, grads)
+    if angles is None:
+        angles = np.zeros((src.shape[0], src.shape[1]))
+        compute_angles_channel(src.astype(np.float64), angles, grads)
 
     for i in range(src.shape[0]):
         for j in range(src.shape[1]):
