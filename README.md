@@ -32,7 +32,7 @@ Here is the simple example of filter usage with opencv Mat images:
 ```cpp
 //opencv included in Source.cpp if you need to change include path, 
 //you should change it there
-#include "Source.cpp"
+#include "FilterBasedOnGradientAnalysis.cpp"
 
 int main()
 {
