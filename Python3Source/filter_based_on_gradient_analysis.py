@@ -145,12 +145,12 @@ def _smooth(src, dst, k_size, grads=None, modules=None, angles=None):
         angles = np.zeros((src.shape[0], src.shape[1], 3))
         compute_angles(src.astype(np.float64), angles, grads)
 
-        list(map(lambda i: smooth_channel(src[:, :, i].astype(np.float64),
-                       k_size,
-                       grads=grads[:, :, :, i],
-                       modules=modules[:, :, i],
-                       angles=angles[:, :, i],
-                       dst=dst[:, :, i]), [i for i in range(3)]))
+    list(map(lambda i: smooth_channel(src[:, :, i].astype(np.float64),
+                    k_size,
+                    grads=grads[:, :, :, i],
+                    modules=modules[:, :, i],
+                    angles=angles[:, :, i],
+                    dst=dst[:, :, i]), [i for i in range(3)]))
     return dst
 
 
