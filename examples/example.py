@@ -14,4 +14,4 @@ kernel_size = 7
 runs_number = 1
 
 output = smooth(img, kernel_size, n=runs_number)
-cv2.imwrite('../output/engel_sm.bmp', output)
+cv2.imwrite(f'../output/engel_sm_{kernel_size}_{runs_number}.bmp', output)
