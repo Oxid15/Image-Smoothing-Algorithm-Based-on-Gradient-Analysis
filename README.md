@@ -49,12 +49,14 @@ When gradient magnitudes are inverted bigger values refer to textures (insignifi
 
 If you used the code or want to reference this method in your work, please cite:
 
-`@inproceedings{gudkov2020image,
+```
+@inproceedings{gudkov2020image,
   title={Image smoothing algorithm based on gradient analysis},
   author={Gudkov, Vladimir and Moiseev, Ilia},
   booktitle={2020 Ural Symposium on Biomedical Engineering, Radioelectronics and Information Technology (USBEREIT)},
   pages={403--406},
   year={2020},
   organization={IEEE}
-}`
+}
+```
 
