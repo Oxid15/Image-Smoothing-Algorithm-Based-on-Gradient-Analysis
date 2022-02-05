@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Custom for project
+*.xml
+*.pyc
+*.iml
+.idea/*
