@@ -23,16 +23,13 @@ def compute_grads(image, grads):
         compute_grads_channel(image[:, :, i], grads[:, :, :, i])
 
 
-def compute_modules_channel(image, modules, grads):
-    for y in range(image.shape[0]):
-        for x in range(image.shape[1]):
-            if 0 < x < image.shape[1] - 1 and 0 < y < image.shape[0] - 1:
-                modules[y][x] = np.linalg.norm(grads[y][x])
+def compute_modules_channel(grads):
+    return np.linalg.norm(grads, axis=2)
 
 
 def compute_modules(image, modules, grads):
     for i in range(3):
-        compute_modules_channel(image[:, :, i], modules[:, :, i], grads[:, :, :, i])
+        modules[:, :, i] = compute_modules_channel(grads[:, :, :, i])
 
 
 def compute_angles_channel(image, angles, grads):
