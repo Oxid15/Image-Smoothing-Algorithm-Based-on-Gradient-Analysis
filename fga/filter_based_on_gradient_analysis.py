@@ -23,13 +23,8 @@ def compute_grads(image, grads):
         compute_grads_channel(image[:, :, i], grads[:, :, :, i])
 
 
-def compute_modules_channel(grads):
+def compute_modules(grads):
     return np.linalg.norm(grads, axis=2)
-
-
-def compute_modules(image, modules, grads):
-    for i in range(3):
-        modules[:, :, i] = compute_modules_channel(grads[:, :, :, i])
 
 
 def compute_angles_channel(image, angles, grads):
@@ -80,8 +75,7 @@ def _smooth_channel(src, k_size, grads=None, modules=None, angles=None, dst=None
         grads = np.zeros((src.shape[0], src.shape[1], 2))
         compute_grads_channel(src.astype(np.float64), grads)
     if modules is None:
-        modules = np.zeros((src.shape[0], src.shape[1]))
-        compute_modules_channel(src.astype(np.float64), modules, grads)
+        modules = compute_modules(grads)
     if angles is None:
         angles = np.zeros((src.shape[0], src.shape[1]))
         compute_angles_channel(src.astype(np.float64), angles, grads)
@@ -126,8 +120,7 @@ def _smooth(src, dst, k_size, grads=None, modules=None, angles=None):
         grads = np.zeros((src.shape[0], src.shape[1], 2, 3))
         compute_grads(src.astype(np.float64), grads)
     if modules is None:
-        modules = np.zeros((src.shape[0], src.shape[1], 3))
-        compute_modules(src.astype(np.float64), modules, grads)
+        modules = compute_modules(grads)
     if angles is None:
         angles = np.zeros((src.shape[0], src.shape[1], 3))
         compute_angles(src.astype(np.float64), angles, grads)
