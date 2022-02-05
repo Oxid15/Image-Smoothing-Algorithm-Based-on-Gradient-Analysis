@@ -7,7 +7,7 @@ from math import sqrt, atan2, cos, isnan
 
 
 def _euclid_norm(vect):
-    return sqrt(vect[0]*vect[0] + vect[1]*vect[1])
+    return sqrt(vect[0] * vect[0] + vect[1] * vect[1])
 
 
 def _angle_rad(vect):
@@ -15,8 +15,8 @@ def _angle_rad(vect):
 
 
 def _grad(x, y, image):
-    gradx = image[y][x-1] - image[y][x+1]
-    grady = image[y+1][x] - image[y-1][x] 
+    gradx = image[y][x - 1] - image[y][x + 1]
+    grady = image[y + 1][x] - image[y - 1][x]
     return [gradx, grady]
 
 
@@ -146,11 +146,11 @@ def _smooth(src, dst, k_size, grads=None, modules=None, angles=None):
         compute_angles(src.astype(np.float64), angles, grads)
 
     list(map(lambda i: smooth_channel(src[:, :, i].astype(np.float64),
-                    k_size,
-                    grads=grads[:, :, :, i],
-                    modules=modules[:, :, i],
-                    angles=angles[:, :, i],
-                    dst=dst[:, :, i]), [i for i in range(3)]))
+                                      k_size,
+                                      grads=grads[:, :, :, i],
+                                      modules=modules[:, :, i],
+                                      angles=angles[:, :, i],
+                                      dst=dst[:, :, i]), [i for i in range(3)]))
     return dst
 
 
@@ -168,10 +168,11 @@ def smooth(src, k_size, n=1, grads=None, modules=None, angles=None):
     """
     src_proxy = np.copy(src)
     dst = np.zeros(src.shape, np.float64)
-    for i in range(n):
-        if i == 0:
-            _smooth(src_proxy, dst, k_size, grads=grads, modules=modules, angles=angles)
-        else:
+
+    if n == 1:
+        _smooth(src_proxy, dst, k_size, grads=grads, modules=modules, angles=angles)
+    else:
+        for i in range(n):
             _smooth(src_proxy, dst, k_size)
-        src_proxy = dst
+            src_proxy = dst
     return dst
