@@ -150,7 +150,7 @@ void computeModules(Tu*** src, Tf*** dst, Ts**** grads, uint32_t height, uint32_
 
 //The class that implements filtering. To use it create an instance of Filter class 
 //and then call operator () from it
-template<typename Tf, typename Tu>
+template<typename Tf, typename Tu, typename Ts>
 class Filter
 {
 private:
@@ -205,13 +205,14 @@ public:
 		Recieves:
 		Tu*** src - source image, array with the shape (height x width x colors)
 		Tf*** dst - destination image with the same shape as src
+		Tf**** grads - the array of gradients with the shape (n, m, 3, 2)
 		Tf*** modules - the array of gradient modules with the same shape as src
 		Tf*** modules - the array of gradient modules with the same shape as src
 		uint32_t ksize - size of filtering kernel (odd values expected)
 		uint32_t n - number of sequential runs
 		uint32_t height, width, colors - dimensions of the src image
 	*/
-	void operator()(Tu*** src, Tf*** dst, Tf*** modules, Tf*** angles,
+	void operator()(Tu*** src, Tf*** dst, Ts**** grads, Tf*** modules, Tf*** angles,
 		uint32_t ksize, uint32_t n, uint32_t height, uint32_t width, uint32_t colors)
 	{
 		Tu*** srcProxy = new Tu**[height];
@@ -226,27 +227,11 @@ public:
 			}	
 		}
 
-		int32_t**** grads = new int32_t***[height];
-		for (uint32_t i = 0; i < height; i++)
+		for (int iter_num = 0; iter_num < n; iter_num++)
 		{
-			grads[i] = new int32_t**[width];
-			for (uint32_t j = 0; j < width; j++)
-			{
-				grads[i][j] = new int32_t*[colors];
-				for (uint32_t c = 0; c < colors; c++)
-				{
-					grads[i][j][c] = new int32_t[2];
-					for (uint32_t k = 0; k < 2; k++)
-						grads[i][j][c][k] = 0;
-				}
-			}
-		}
-
-		for (int i = 0; i < n; i++)
-		{
-			computeGrads<Tu, int32_t>(srcProxy, grads, height, width, colors);
-			computeModules<Tf, Tu, int32_t>(srcProxy, modules, grads, height, width, colors);
-			computeAngles<Tf, Tu, int32_t>(srcProxy, angles, grads, height, width, colors);
+			computeGrads<Tu, Ts>(srcProxy, grads, height, width, colors);
+			computeModules<Tf, Tu, Ts>(srcProxy, modules, grads, height, width, colors);
+			computeAngles<Tf, Tu, Ts>(srcProxy, angles, grads, height, width, colors);
 			this->filter(srcProxy, dst, modules, angles, ksize, height, width, colors);
 
 			for (uint32_t i = 0; i < height; i++)
@@ -259,7 +244,18 @@ public:
 					}
 				}
 			}
+			std::cout << iter_num << ' ';
 		}
+
+		for (uint32_t i = 0; i < height; i++)
+		{
+			for (uint32_t j = 0; j < width; j++)
+			{
+				delete srcProxy[i][j];
+			}
+			delete srcProxy[i];
+		}
+		delete srcProxy;
 	}
 
 	Mat operator()(Mat src, uint32_t ksize, uint32_t n=1)
@@ -290,7 +286,7 @@ public:
 		Tu*** intoutput = new Tu**[height];
 		Tf*** modules = new Tf**[height];
 		Tf*** angles = new Tf**[height];
-		int32_t**** grads = new int32_t***[height];
+		Ts**** grads = new Ts***[height];
 		for (uint32_t i = 0; i < height; i++)
 		{
 			image[i] = new Tu*[width];
@@ -298,7 +294,7 @@ public:
 			intoutput[i] = new Tu*[width];
 			modules[i] = new Tf*[width];
 			angles[i] = new Tf*[width];
-			grads[i] = new int32_t**[width];
+			grads[i] = new Ts**[width];
 			for (uint32_t j = 0; j < width; j++)
 			{
 				image[i][j] = src.ptr<Tu>(i, j);
@@ -307,26 +303,22 @@ public:
 				intoutput[i][j] = new Tu[colors];
 				modules[i][j] = new Tf[colors];
 				angles[i][j] = new Tf[colors];
-				grads[i][j] = new int32_t*[colors];
+				grads[i][j] = new Ts*[colors];
 				for (uint32_t c = 0; c < colors; c++)
 				{
 					output[i][j][c] = .0;
 					intoutput[i][j][c] = 0;
 					modules[i][j][c] = .0;
 					angles[i][j][c] = .0;
-					grads[i][j][c] = new int32_t[2];
+					grads[i][j][c] = new Ts[2];
 					for (uint32_t k = 0; k < 2; k++)
 						grads[i][j][c][k] = 0;
 				}
 			}
 		}
 
-		computeGrads<Tu, int32_t>(image, grads, height, width, colors);
-		computeModules<Tf, Tu, int32_t>(image, modules, grads, height, width, colors);
-		computeAngles<Tf, Tu, int32_t>(image, angles, grads, height, width, colors);
-
 		//filtering with regular function
-		this->operator()(image, output, modules, angles, ksize, n, height, width, colors);
+		this->operator()(image, output, grads, modules, angles, ksize, n, height, width, colors);
 
 		//deallocating memory that gradients, modules and angles were using
 		for (uint32_t i = 0; i < height; i++)
