@@ -3,15 +3,14 @@
 # Image smoothing Algorithm Based on Gradient Analysis
 
 import numpy as np
-from math import sqrt, atan2, cos, isnan
 
 
 def _euclid_norm(vect):
-    return sqrt(vect[0] * vect[0] + vect[1] * vect[1])
+    return np.sqrt(vect[0] * vect[0] + vect[1] * vect[1])
 
 
 def _angle_rad(vect):
-    return atan2(vect[1], vect[0])
+    return np.arctan2(vect[1], vect[0])
 
 
 def _grad(x, y, image):
@@ -48,7 +47,7 @@ def compute_angles_channel(image, angles, grads):
         for x in range(image.shape[1]):
             if 0 < x < image.shape[1] - 1 and 0 < y < image.shape[0] - 1:
                 angle = _angle_rad(grads[y, x])
-                if not isnan(angle):
+                if not np.isnan(angle):
                     angles[y, x] = angle
                 else:
                     angles[y, x] = 0
@@ -119,7 +118,7 @@ def _smooth_channel(src, k_size, grads=None, modules=None, angles=None, dst=None
                     if s != i or t != j:
                         alpha = 1. / modules[s][t]
                         beta = 2. * (angles[i][j] - angles[s][t])
-                        weight = (cos(beta) + 1) * alpha
+                        weight = (np.cos(beta) + 1) * alpha
                     else:
                         # weight of central pixel
                         weight = 1.
