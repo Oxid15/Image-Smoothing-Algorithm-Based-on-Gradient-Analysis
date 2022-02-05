@@ -166,6 +166,9 @@ def smooth(src, k_size, n=1, grads=None, modules=None, angles=None):
     :param angles: gradient angles for each pixel with shape (n, m, 3)
     :return: smoothed image with same shape as src and type np.float64
     """
+    if k_size % 2 == 0:
+        raise ValueError(f'k_size should be odd, got {k_size} instead')
+
     src_proxy = np.copy(src)
     dst = np.zeros(src.shape, np.float64)
 
