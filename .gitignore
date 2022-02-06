@@ -36,3 +36,12 @@
 *.pyc
 *.iml
 .idea/*
+*.suo
+*.db
+*.ipch
+*.sqlite
+*.tlog
+*.log
+*.pdb
+*.sln
+*.vcxproj*
