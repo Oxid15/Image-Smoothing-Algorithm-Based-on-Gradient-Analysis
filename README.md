@@ -5,7 +5,7 @@ This repository contains C++ and Python 3 implementation of an image smoothing a
 
 
 ## How to use code
-Libraries used:
+Requirements for C++:
   - opencv 4.3.0 if you want Mat type support
 
 Here is the simple example of filter usage with opencv Mat images:
@@ -26,6 +26,11 @@ int main()
     return 0;
 }
 ```
+Python requirements are in file requirements.txt
+use:
+`pip install --upgrade pip`
+`pip install -r requirements.txt`  
+
 Here is example with python:
 ```python
 import filter_based_on_gradient_analysis as fga
