@@ -27,8 +27,8 @@ int main()
 }
 ```
 Python requirements are in file requirements.txt
-use:
-`pip install --upgrade pip`
+use:  
+`pip install --upgrade pip`  
 `pip install -r requirements.txt`  
 
 Here is example with python:
