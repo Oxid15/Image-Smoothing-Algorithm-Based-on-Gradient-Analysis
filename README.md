@@ -1,12 +1,16 @@
 # Image Smoothing Algorithm Based on Gradient Analysis
+
+[![DOI](https://zenodo.org/badge/261705729.svg)](https://zenodo.org/badge/latestdoi/261705729)
+
 This repository contains C++ and Python 3 implementation of an image smoothing algorithm that was proposed in this [publication](https://ieeexplore.ieee.org/document/9117646).  
 
 ![example1](/images/example.png)  
 
-
 ## How to use code
+
 Requirements for C++:
-  - opencv 4.3.0 if you want Mat type support
+
+- opencv 4.3.0 if you want Mat type support
 
 Here is the simple example of filter usage with opencv Mat images:
 
@@ -26,12 +30,14 @@ int main()
     return 0;
 }
 ```
+
 Python requirements are in file requirements.txt
 use:  
 `pip install --upgrade pip`  
 `pip install -r requirements.txt`  
 
 Here is example with python:
+
 ```python
 import filter_based_on_gradient_analysis as fga
 import cv2
@@ -44,6 +50,7 @@ cv2.imwrite('your_output_file_name', output)                # write the result
 ```
 
 ## General idea
+
 Our algorithm uses filtering and to achieve edge-preserving smoothing it uses two components of gradient vectors: their magnitudes (or lengths) and directions. Our method discriminates between two types of boundaries in given neighborhood: regular and irregular ones.
 ![boundaries](/images/boundaries.png)  
 Regular boundaries have small deviations of gradient angles and the opposite for irregular ones. To measure closeness of angles cosine of doubled difference is used. As additional measure that helps to discriminate the types of boundaries inverted gradient values were used.  
@@ -54,7 +61,7 @@ When gradient magnitudes are inverted bigger values refer to textures (insignifi
 
 If you used the code or want to reference this method in your work, please cite:
 
-```
+```bibtex
 @inproceedings{gudkov2020image,
   title={Image smoothing algorithm based on gradient analysis},
   author={Gudkov, Vladimir and Moiseev, Ilia},
@@ -64,4 +71,3 @@ If you used the code or want to reference this method in your work, please cite:
   organization={IEEE}
 }
 ```
-
